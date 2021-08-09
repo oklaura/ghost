@@ -30,9 +30,18 @@ class Game
     def play_round
         player = @current_player
         letter = player.get_letter
-        @fragment += letter 
+        if Dictionary.valid?(letter)
+            add_to_fragment(letter)
+        else
+            return
+        end
         puts "Word fragment: " + @fragment
         switch_player
+    end
+
+    def add_to_fragment(letter)
+        @fragment += letter
+        true
     end
 
     def introduction

@@ -29,8 +29,13 @@ class Game
     end
 
     def play_round
+        sleep(1)
+        system("clear")
 
         @fragment = ''
+
+        puts "New Round"
+        puts "---------"
         read_scores
 
         until @dictionary.complete_word?(@fragment)
@@ -41,6 +46,7 @@ class Game
         elsif @dictionary.complete_word?(@fragment, letter)
             add_to_fragment(letter)
             update_losses
+            switch_player
             return
         else
             return
@@ -60,7 +66,13 @@ class Game
     end
 
     def conclusion
-        puts "conclusion"
+        sleep(1)
+        system("clear")
+
+        puts "GAME OVER"
+        winner = @players[0].name
+        puts "#{winner} wins!"
+        sleep(2)
     end
 
     def switch_player
@@ -77,12 +89,14 @@ class Game
     end
 
     def update_losses
-        # losses[@current_player] += 1
-        # if losses[@current_player] == MAX_LOSSES
+        losses[@current_player] += 1
+        if losses[@current_player] == MAX_LOSSES
             puts "#{@current_player.name} spelled 'GHOST' and is eliminated from the game"
-        # else
-        #     puts "#{@current_player.name} loses round and get's a letter. Score: #{spell_ghost(@losses[@current_player])}"
-        # end
+            delete_me = @current_player
+            @players.delete(delete_me)
+        else
+            puts "#{@current_player.name} loses round and get's a letter."
+        end
     end
 
     def spell_ghost(losses)
@@ -93,6 +107,8 @@ class Game
     end
 
     def read_scores 
+        puts "Scoreboard"
+        puts "----------"
         @losses.each do |k, v|
             puts "#{k.name}: #{spell_ghost(v)}"
         end

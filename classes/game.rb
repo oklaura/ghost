@@ -62,7 +62,7 @@ class Game
     end
 
     def introduction
-        puts "intro"
+        
     end
 
     def conclusion
@@ -91,6 +91,7 @@ class Game
     def update_losses
         losses[@current_player] += 1
         if losses[@current_player] == MAX_LOSSES
+            system("clear")
             puts "#{@current_player.name} spelled 'GHOST' and is eliminated from the game"
             delete_me = @current_player
             @players.delete(delete_me)
@@ -110,8 +111,10 @@ class Game
         puts "Scoreboard"
         puts "----------"
         @losses.each do |k, v|
+            next if v == 5
             puts "#{k.name}: #{spell_ghost(v)}"
         end
+        puts
     end
 
 

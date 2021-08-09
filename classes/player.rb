@@ -9,7 +9,7 @@ class Player
 
     def get_letter
         puts "#{self.name}'s turn! Add a letter to the word fragment"
-        puts "> "
+        print "> "
         letter = gets.chomp.downcase
         return letter
     end

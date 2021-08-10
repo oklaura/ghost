@@ -3,6 +3,7 @@
 
 require_relative "classes/player"
 require_relative "classes/game"
+require_relative "classes/computer_player"
 
 system("clear")
 
@@ -28,6 +29,19 @@ number_of_players = gets.chomp.strip.to_i
 names = []
 players = []
 
+if number_of_players == 1
+    system("clear")
+    puts "Enter player name"
+    print "> "
+    name = gets.chomp
+    names << name
+    player = Player.new(name)
+    players << player
+    computer_player = ComputerPlayer.new
+    players << computer_player
+    names << computer_player.name
+
+else
 (0...number_of_players).each do |i|
     system("clear")
     puts "Enter player #{i + 1}'s name"
@@ -36,6 +50,7 @@ players = []
     names << name
     player = Player.new(name)
     players << player 
+end
 end
 
 system("clear")

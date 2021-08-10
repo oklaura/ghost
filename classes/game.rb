@@ -7,8 +7,9 @@ require_relative 'dictionary.rb'
 class Game
 
     MAX_LOSSES = 5
+    MAX_TRIES = 3
 
-    attr_reader :players, :losses, :current_player, :run
+    attr_reader :players, :losses, :current_player, :run, :dictionary
 
 
     def initialize(*players)
@@ -17,7 +18,6 @@ class Game
         @players.each {|player| losses[player] = 0}
         @current_player = @players[0]
         @fragment = ''
-        @dictionary = Dictionary.new
     end
 
     def run
@@ -37,23 +37,41 @@ class Game
         puts "New Round"
         puts "---------"
         read_scores
+        tries = 0
 
-        until @dictionary.complete_word?(@fragment)
-        player = @current_player
-        letter = player.get_letter
-        if Dictionary.valid_letter?(letter) && @dictionary.valid_fragment?(@fragment, letter) && !@dictionary.complete_word?(@fragment, letter)
-            add_to_fragment(letter)
-        elsif @dictionary.complete_word?(@fragment, letter)
-            add_to_fragment(letter)
-            update_losses
-            switch_player
-            return
-        else
-            return
-        end
-        puts "Word fragment: " + @fragment
+            until Dictionary.complete_word?(@fragment) || tries == MAX_TRIES
+                puts "Word fragment: " + @fragment
+                puts
+                player = @current_player
+
+                #checks if current player is player or computer
+                if player.is_a?(ComputerPlayer)
+                    letter = player.get_letter(@fragment)
+                    add_to_fragment(letter)
+                    sleep(1)
+                    puts "#{player.name} added an #{letter}!"
+                    sleep(1)
+                else
+                    valid = false
+                    until valid == true || tries == MAX_TRIES
+                        letter = player.get_letter
+                        if Dictionary.valid_letter?(letter) && Dictionary.valid_fragment?(@fragment, letter)
+                            valid = true
+                            add_to_fragment(letter)
+                        else
+                            puts "Invalid letter"
+                            tries += 1
+                            puts tries
+                        end
+                    end
+                end
+                puts '--'
+                switch_player
+            end
         switch_player
-        end
+        update_losses
+        switch_player
+        return
     end
 
     def add_to_fragment(letter)
@@ -96,7 +114,9 @@ class Game
             delete_me = @current_player
             @players.delete(delete_me)
         else
+            puts @fragment
             puts "#{@current_player.name} loses round and get's a letter."
+            sleep(1)
         end
     end
 
